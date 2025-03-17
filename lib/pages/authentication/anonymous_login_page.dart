@@ -7,7 +7,7 @@ class AnonymousLoginPage extends StatelessWidget {
 
   void _signInAnonymously(BuildContext context) async {
     try {
-      await AuthenticationService().singInAnonymously();
+      await AuthenticationService().singInAnonymouslyWithExceptions();
 
       //Navigate to Main Page
       if (context.mounted) {
@@ -15,6 +15,8 @@ class AnonymousLoginPage extends StatelessWidget {
           context,
           MaterialPageRoute(builder: (context) => MainPage()),
         );
+
+        //Signed in Message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Your Signed in as an Anonymous User"),
