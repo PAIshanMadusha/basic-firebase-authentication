@@ -42,4 +42,24 @@ class AuthenticationService {
       debugPrint("Error Logging Out: $error");
     }
   }
+
+  //Create User with Email & Password
+  Future<void> registerUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        "Error with Creating New User: ${mapFirebaseAuthExceptionCodes(errorCode: error.code)},",
+      );
+      throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
+    } catch (error) {
+      debugPrint("Error Creating User: $error");
+    }
+  }
 }

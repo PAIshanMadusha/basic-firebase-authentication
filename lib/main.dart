@@ -1,4 +1,4 @@
-import 'package:basic_firebase_authentication/pages/home_page.dart';
+import 'package:basic_firebase_authentication/pages/authentication/register_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Basic Firebase Authentication App",
-      home: HomePage(),
+      home: RegisterPage(),
     );
   }
 }
