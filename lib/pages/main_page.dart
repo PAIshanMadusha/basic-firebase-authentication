@@ -1,4 +1,4 @@
-import 'package:basic_firebase_authentication/pages/home_page.dart';
+import 'package:basic_firebase_authentication/pages/authentication/register_page.dart';
 import 'package:basic_firebase_authentication/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class MainPage extends StatelessWidget {
     //Navigate to HomePage
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+      MaterialPageRoute(builder: (context) => RegisterPage()),
     );
 
     //SignOut Message

@@ -62,4 +62,18 @@ class AuthenticationService {
       debugPrint("Error Creating User: $error");
     }
   }
+
+  //Sign in with Email and Password
+  Future<void> singInUser({required email, required password}) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        "Error with SignIn New User: ${mapFirebaseAuthExceptionCodes(errorCode: error.code)}",
+      );
+      throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
+    } catch (error) {
+      debugPrint("Error SignIn User: $error");
+    }
+  }
 }

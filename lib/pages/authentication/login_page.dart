@@ -1,4 +1,6 @@
 import 'package:basic_firebase_authentication/pages/authentication/register_page.dart';
+import 'package:basic_firebase_authentication/pages/main_page.dart';
+import 'package:basic_firebase_authentication/services/authentication_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,6 +15,52 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = false;
+
+  //SignIn
+  Future<void> _signInUser() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      await AuthenticationService().singInUser(
+        email: email,
+        password: password,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("SignIn Successfully!"),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+      //Navigate to MainPage if SignIn Successful
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error with SignIn User: $error")),
+        );
+      }
+    }finally{
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +103,12 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(onPressed: () {}, child: Text("Login")),
+                _isLoading == true
+                    ? Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                      onPressed: _signInUser,
+                      child: Text("Login"),
+                    ),
                 SizedBox(height: 15),
                 TextButton(
                   onPressed: () {
