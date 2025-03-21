@@ -65,55 +65,104 @@ class _LoginPageState extends State<LoginPage> {
 
   //SignIn with Google
   Future<void> _signInWithGoogle() async {
-  setState(() {
-    _isLoading = true;
-  });
+    setState(() {
+      _isLoading = true;
+    });
 
-  try {
-       await AuthenticationService().signInWithGoogle();
+    try {
+      await AuthenticationService().signInWithGoogle();
 
-    // Check if user is signed in after the sign-in process
-    final user = FirebaseAuth.instance.currentUser;
+      // Check if user is signed in after the sign-in process
+      final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) {
-      // User canceled sign-in, show a message and return
+      if (user == null) {
+        // User canceled sign-in, show a message and return
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Google Sign-In was canceled."),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return; // Stop execution, prevent navigation
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Google Sign-In was canceled."),
-            duration: Duration(seconds: 2),
+            content: Text("Sign-In Successfully!"),
+            duration: Duration(seconds: 1),
           ),
         );
+
+        // Navigate to MainPage only if a user is signed in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
       }
-      return; // Stop execution, prevent navigation
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error with Google Sign-In: $error")),
+        );
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Sign-In Successfully!"),
-          duration: Duration(seconds: 1),
-        ),
-      );
-
-      // Navigate to MainPage only if a user is signed in
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainPage()),
-      );
-    }
-  } catch (error) {
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error with Google Sign-In: $error")),
-      );
-    }
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
   }
-}
 
+  //SignIn with GitHub
+  Future<void> _signInWithGitHub() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await AuthenticationService().signInWithGitHub();
+
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        // User canceled sign-in, show a message and return
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("GitHub Sign-In was canceled."),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+        return;
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Sign-In Successfully!"),
+            duration: Duration(seconds: 1),
+          ),
+        );
+
+        // Navigate to MainPage only if a user is signed in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainPage()),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error with GitHub Sign-In: $error")),
+        );
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +216,10 @@ class _LoginPageState extends State<LoginPage> {
                         ElevatedButton(
                           onPressed: _signInWithGoogle,
                           child: Text("SignIn with Google"),
+                        ),
+                        ElevatedButton(
+                          onPressed: _signInWithGitHub,
+                          child: Text("SignIn with GitHub"),
                         ),
                       ],
                     ),

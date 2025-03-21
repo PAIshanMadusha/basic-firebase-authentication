@@ -109,4 +109,19 @@ class AuthenticationService {
       debugPrint("Error SignIn with Google: $error");
     }
   }
+
+  //Github SignIn
+  Future<void> signInWithGitHub() async {
+    try {
+      GithubAuthProvider gitHubAuthProvider = GithubAuthProvider();
+      await _auth.signInWithProvider(gitHubAuthProvider);
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        "Error with Github SignIn: ${mapFirebaseAuthExceptionCodes(errorCode: error.code)}",
+      );
+      throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
+    } catch (error) {
+      debugPrint("Error SignIn with GitHub: $error");
+    }
+  }
 }
