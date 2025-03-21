@@ -124,4 +124,19 @@ class AuthenticationService {
       debugPrint("Error SignIn with GitHub: $error");
     }
   }
+
+  //Send Passowrd Reset Email
+  Future<void> sendPasswordResetEmail({required String email}) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      debugPrint("Password Reset Email Send to $email");
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        "Error sending Reset Passoword: ${mapFirebaseAuthExceptionCodes(errorCode: error.code)}",
+      );
+      throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
+    } catch (error) {
+      debugPrint("Error Sending Password Reset Email: $email");
+    }
+  }
 }

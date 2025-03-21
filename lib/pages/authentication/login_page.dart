@@ -1,3 +1,4 @@
+import 'package:basic_firebase_authentication/pages/authentication/forgot_password_page.dart';
 import 'package:basic_firebase_authentication/pages/authentication/register_page.dart';
 import 'package:basic_firebase_authentication/pages/main_page.dart';
 import 'package:basic_firebase_authentication/services/authentication_service.dart';
@@ -223,6 +224,18 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
+                SizedBox(height: 15),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ForgotPasswordPage(),
+                      ),
+                    );
+                  },
+                  child: Text("Forgot Password?"),
+                ),
                 SizedBox(height: 15),
                 TextButton(
                   onPressed: () {
