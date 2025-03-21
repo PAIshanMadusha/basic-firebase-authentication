@@ -1,9 +1,11 @@
 import 'package:basic_firebase_authentication/exceptions/authentication_exceptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   //SignIn Anonymously
   Future<void> singInAnonymouslyWithExceptions() async {
@@ -74,6 +76,37 @@ class AuthenticationService {
       throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
     } catch (error) {
       debugPrint("Error SignIn User: $error");
+    }
+  }
+
+  //SignIn with Google
+  Future<void> signInWithGoogle() async {
+    try {
+      //Trigger the Google SignIn Process
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        return;
+      }
+
+      //Obtain the Google SignIn Authentication Object
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleUser.authentication;
+
+      //Create a New Credential
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      //SignIn to Firebase with the Google Auth Credential
+      await _auth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        "Error with Google SignIn: ${mapFirebaseAuthExceptionCodes(errorCode: error.code)}",
+      );
+      throw Exception(mapFirebaseAuthExceptionCodes(errorCode: error.code));
+    } catch (error) {
+      debugPrint("Error SignIn with Google: $error");
     }
   }
 }

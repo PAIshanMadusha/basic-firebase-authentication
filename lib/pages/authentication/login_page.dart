@@ -1,6 +1,7 @@
 import 'package:basic_firebase_authentication/pages/authentication/register_page.dart';
 import 'package:basic_firebase_authentication/pages/main_page.dart';
 import 'package:basic_firebase_authentication/services/authentication_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -55,12 +56,64 @@ class _LoginPageState extends State<LoginPage> {
           SnackBar(content: Text("Error with SignIn User: $error")),
         );
       }
-    }finally{
+    } finally {
       setState(() {
         _isLoading = false;
       });
     }
   }
+
+  //SignIn with Google
+  Future<void> _signInWithGoogle() async {
+  setState(() {
+    _isLoading = true;
+  });
+
+  try {
+       await AuthenticationService().signInWithGoogle();
+
+    // Check if user is signed in after the sign-in process
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      // User canceled sign-in, show a message and return
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Google Sign-In was canceled."),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+      return; // Stop execution, prevent navigation
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Sign-In Successfully!"),
+          duration: Duration(seconds: 1),
+        ),
+      );
+
+      // Navigate to MainPage only if a user is signed in
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+      );
+    }
+  } catch (error) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error with Google Sign-In: $error")),
+      );
+    }
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +158,17 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 20),
                 _isLoading == true
                     ? Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                      onPressed: _signInUser,
-                      child: Text("Login"),
+                    : Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _signInUser,
+                          child: Text("Login"),
+                        ),
+                        ElevatedButton(
+                          onPressed: _signInWithGoogle,
+                          child: Text("SignIn with Google"),
+                        ),
+                      ],
                     ),
                 SizedBox(height: 15),
                 TextButton(
