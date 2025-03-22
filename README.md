@@ -94,7 +94,7 @@ default:
 
 - 📖**Read my blog on Medium here:** [Link](https://medium.com/@ishanmadusha/how-to-connect-firebase-manually-to-a-flutter-android-project-without-errors-7a2c2a8e2741)
 
-- 📝**Also, you can view my previous project,** [Taskly Firebase App](https://github.com/PAIshanMadusha/taskly-firebase-app.git)I have written clearly on the README how to set up Firebase.
+- 📝**Also, you can view my previous project,** [Taskly Firebase App](https://github.com/PAIshanMadusha/taskly-firebase-app.git) I have written clearly on the README how to set up Firebase.
 
 ### 🚀 To use Firebase services in this project, follow these steps:
 
